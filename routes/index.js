@@ -1,5 +1,6 @@
 var express = require('express');
-var request = require('request'); // You can include your JSON data directly with json parameter with request library
+var request = require('request');// You can include your JSON data directly with json parameter with request library
+var fs = require("fs");
 var router = express.Router();
 
 // validate received key
@@ -28,6 +29,35 @@ function validateRequest(applicationID, key, callback) {
     });
 }
 
+function containsObject(obj, list) {
+    var x;
+    for (x in list) {
+        if (list.hasOwnProperty(x) && x.applicationID === obj.applicationID && x.key === obj.key) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function addRegistrationToFile(applicationID,key) {
+        fs.readFile("./data.json", 'utf8', function (err, data) {
+            if (err) throw err;
+
+            var newRegistrationData = {applicationID: applicationID, key: key};
+            var oldRegistrationData = [];
+            if (data instanceof Array) {
+                oldRegistrationData = data;
+            }
+            //only store new registration if it is a new one
+            if(!containsObject(newRegistrationData,oldRegistrationData)) oldRegistrationData.push(newRegistrationData);
+            fs.writeFile ("./data.json", JSON.stringify(oldRegistrationData), function(err) {
+                if (err) throw err;
+                console.log('complete');
+            });
+        });
+}
+
 /* GET home page. */
 router.get('/login', function(req, res) {
   var applicationID = req.query.applicationID;
@@ -37,7 +67,7 @@ router.get('/login', function(req, res) {
         var content = '';
         if(responseBody){
             content = 'Success!';
-            //TODO store to file
+            addRegistrationToFile(applicationID,key);
         }else{
             content = 'Something went wrong. Are you sure you have correctly configured your Data Storage integration?';
         }
