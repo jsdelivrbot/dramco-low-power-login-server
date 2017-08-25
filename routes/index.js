@@ -20,7 +20,7 @@ function validateRequest(applicationID, key, callback) {
 
     var req = request(options, function (error, response, body) {
         console.log("receive status code : " + response.statusCode);
-        if (response.statusCode === 200) {
+        if (response.statusCode === 200 || response.statusCode === 204) {
             console.log(body);
             callback(body);
             return;
