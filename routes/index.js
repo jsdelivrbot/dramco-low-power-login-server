@@ -59,6 +59,7 @@ function addRegistrationToFile(applicationID,key) {
 }
 
 /* GET home page. */
+// https://low-power-login.herokuapp.com/login?applicationID=dramco-low-power-sensor-tutorial&key=ttn-account-v2.5VvYm0qTZgr1tBpL-FmRq1XDW5mV_uo3HwR5rVp09HM
 router.get('/login', function(req, res) {
   var applicationID = req.query.applicationID;
   var key = req.query.key;
@@ -74,5 +75,20 @@ router.get('/login', function(req, res) {
         res.render('index', { title: 'Login' , content: content, body : responseBody});
     });
 });
+
+
+// Request user data
+router.get('/users', function(req,res){
+    fs.readFile("./data.json", 'utf8', function (err, data) {
+        if (err) throw err;
+
+        var registrationData = [];
+        if (data instanceof Array) {
+            registrationData = data;
+        }
+        res.send(JSON.stringify(registrationData));
+    });
+});
+
 
 module.exports = router;
