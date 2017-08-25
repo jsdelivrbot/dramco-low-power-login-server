@@ -41,8 +41,13 @@ function containsObject(obj, list) {
 }
 
 function addRegistrationToFile(applicationID,key) {
-        fs.readFile("./data.json", 'utf8', function (err, data) {
-            if (err) throw err;
+        fs.readFile("data.json", 'utf8', function (err, data) {
+            if (err.code === 'ENOENT') {
+                console.log('File not found!');
+                // no problem
+            } else {
+                throw err;
+            }
 
             var newRegistrationData = {applicationID: applicationID, key: key};
             var oldRegistrationData = [];
@@ -51,7 +56,7 @@ function addRegistrationToFile(applicationID,key) {
             }
             //only store new registration if it is a new one
             if(!containsObject(newRegistrationData,oldRegistrationData)) oldRegistrationData.push(newRegistrationData);
-            fs.writeFile ("./data.json", JSON.stringify(oldRegistrationData), function(err) {
+            fs.writeFile ("data.json", JSON.stringify(oldRegistrationData), function(err) {
                 if (err) throw err;
                 console.log('complete');
             });
@@ -79,8 +84,13 @@ router.get('/login', function(req, res) {
 
 // Request user data
 router.get('/users', function(req,res){
-    fs.readFile("./data.json", 'utf8', function (err, data) {
-        if (err) throw err;
+    fs.readFile("data.json", 'utf8', function (err, data) {
+        if (err.code === 'ENOENT') {
+            console.log('File not found!');
+            // no problem
+        } else {
+            throw err;
+        }
 
         var registrationData = [];
         if (data instanceof Array) {
