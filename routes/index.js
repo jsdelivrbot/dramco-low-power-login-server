@@ -116,4 +116,16 @@ router.get('/users', function (req, res) {
 
 });
 
+// Request user data
+router.get('/clean', function (req, res) {
+
+    getRegistrationsFromFile(function () {
+        fs.writeFile(PATH, "", function (err) {
+            if (err) throw err;
+            console.log('cleaning complete');
+        });
+    });
+
+});
+
 module.exports = router;
