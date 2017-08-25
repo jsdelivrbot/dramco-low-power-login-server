@@ -126,6 +126,8 @@ router.get('/clean', function (req, res) {
         });
     });
 
+    res.send("");
+
 });
 
 module.exports = router;
