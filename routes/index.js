@@ -139,22 +139,30 @@ function storeRegistrationData(applicationID, key) {
 /* GET home page. */
 // https://low-power-login.herokuapp.com/login?applicationID=dramco-low-power-sensor-tutorial&key=ttn-account-v2.5VvYm0qTZgr1tBpL-FmRq1XDW5mV_uo3HwR5rVp09HM
 // https://low-power-login.herokuapp.com/login?applicationID=test-app-geof&key=ttn-account-v2.Q9oucCNKtijgzMNPEJ2fUKI9UoR97NKCIS2-MK8JPaE
-router.get('/login', function (req, res) {
-    var applicationID = req.query.applicationID;
-    var key = req.query.key;
+router.post('/login', function (req, res) {
+    console.log(req.body);
+    var applicationID = req.body.applicationID;
+    var key = req.body.accessKey;
+
+    console.log("K: "+key+" - ID: "+applicationID);
 
     validateRequest(applicationID, key, function (responseBody) {
         var content = '';
         if (responseBody) {
-            content = 'Success!';
             storeRegistrationData(applicationID, key);
+            res.render("success.jade");
         } else {
-            content = 'Something went wrong. Are you sure you have correctly configured your Data Storage integration?';
+            res.render("error.jade");
         }
-        res.render('index', {title: 'Login', content: content, body: responseBody});
+
     });
 });
 
+
+// Request user data
+router.get('/', function (req, res) {
+    res.render("index.jade");
+});
 
 // Request user data
 router.get('/users', function (req, res) {
